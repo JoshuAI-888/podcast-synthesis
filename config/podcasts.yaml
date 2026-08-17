@@ -1,0 +1,86 @@
+# =============================================================================
+# podcasts.yaml — Podcast source registry (dynamically extensible)
+# -----------------------------------------------------------------------------
+# This file is the single source of truth for WHICH shows are ingested and HOW.
+# Add a new show by appending a block. No code change required.
+#
+# In Stream A (quick) this file lives in the repo and is edited via Cowork.
+# In Stream B (production) these rows are mirrored into a Unity Catalog table
+# (`gold.config_podcasts`) and edited via the Configuration App; this file is
+# then a seed / export format.
+# =============================================================================
+
+defaults:
+  transcript_source_priority:        # order in which we try to obtain a transcript
+    - feed_transcript_tag            # podcast:transcript (Podcasting 2.0) — cheapest, licit
+    - publisher_website              # show notes / publisher-hosted transcript
+    - youtube_captions               # only if channel is owned/licensed
+    - self_transcribe                # WhisperX on our own infra (always available)
+  transcription_engine: whisperx     # default engine when self_transcribe is used
+  transcription_fallback: azure_speech
+  language: en
+  min_transcript_quality: 0.85       # 0-1; below this we re-transcribe ourselves
+  poll_cron: "0 6 * * *"             # daily 06:00 UTC new-episode poll
+
+podcasts:
+  - id: acquired
+    title: "Acquired"
+    rss: "https://feeds.transistor.fm/acquired"
+    enabled: true
+    themes: [semiconductors, hyperscalers, m&a, business-history]
+    priority: high
+
+  - id: bg2
+    title: "BG2 Pod (Bill Gurley & Brad Gerstner)"
+    rss: "https://example-host.com/bg2/rss.xml"   # replace with real feed at onboarding
+    enabled: true
+    themes: [ai-infra, capex, public-markets, semis]
+    priority: high
+
+  - id: a16z
+    title: "a16z Podcast"
+    rss: "https://feeds.simplecast.com/JGE3yC0V"
+    enabled: true
+    themes: [ai, startups, venture, policy]
+    priority: medium
+
+  - id: lex-fridman
+    title: "Lex Fridman Podcast"
+    rss: "https://lexfridman.com/feed/podcast/"
+    enabled: true
+    themes: [ai-research, robotics, deep-tech]
+    priority: medium
+    # This show publishes transcripts on the website — publisher_website will hit first.
+
+  - id: dwarkesh
+    title: "Dwarkesh Podcast"
+    rss: "https://api.substack.com/feed/podcast/69345.rss"
+    enabled: true
+    themes: [ai-research, scaling, economics-of-ai]
+    priority: high
+
+# -----------------------------------------------------------------------------
+# Backfill jobs — declarative, idempotent. Selectable BY PODCAST and BY
+# (days | episodes | date range). Runner dedups on episode GUID so re-runs are
+# safe. Remove or set enabled:false after completion; history is kept in the
+# job ledger (gold.backfill_runs).
+# -----------------------------------------------------------------------------
+backfill:
+  - id: acquired-last-90d
+    podcast_id: acquired
+    mode: by_days
+    days: 90
+    enabled: true
+
+  - id: bg2-last-25-episodes
+    podcast_id: bg2
+    mode: by_episodes
+    episodes: 25
+    enabled: true
+
+  - id: dwarkesh-2025-h2
+    podcast_id: dwarkesh
+    mode: date_range
+    start: "2025-07-01"
+    end:   "2025-12-31"
+    enabled: false

@@ -1,0 +1,74 @@
+# =============================================================================
+# recipients.yaml — Investment-team recipient profiles (up to ~45)
+# -----------------------------------------------------------------------------
+# Each recipient gets a synthesis tailored to their angle, coverage and format.
+# The synthesis engine scores every episode's extracted claims against these
+# profiles and composes a per-recipient digest.
+#
+# Stream A: edited here via Cowork.
+# Stream B: mirrored to `gold.config_recipients`, edited via the Config App,
+#           with Unity Catalog RBAC (analysts edit only their own row).
+# =============================================================================
+
+defaults:
+  cadence: daily            # daily | weekly | on_publish
+  send_time_local: "07:00"
+  timezone: "Europe/London"
+  format: email_html        # email_html | email_text | slack (future)
+  max_items: 8              # cap episodes/claims per digest
+  depth: standard           # headline | standard | deep
+  include_timestamps: true  # deep-link citations back to the audio moment
+  include_transcript_links: true
+  compliance_profile: buy_side_default   # applies MNPI + no-advice guardrails
+
+recipients:
+  - id: a.analyst
+    name: "Ana Ramos"
+    email: "ana.ramos@example.com"
+    role: analyst
+    coverage_sectors: [semiconductors, semicap]
+    watchlist_tickers: [NVDA, TSM, ASML, AMD, AVGO]
+    angles:
+      - "Leading-edge capacity, packaging (CoWoS/HBM) supply-demand"
+      - "AI accelerator roadmaps and competitive share shifts"
+    avoid: [consumer-gadgets]
+    depth: deep
+
+  - id: p.pm
+    name: "Priya Menon"
+    email: "priya.menon@example.com"
+    role: portfolio_manager
+    coverage_sectors: [software, internet, semis]
+    watchlist_tickers: [MSFT, GOOGL, AMZN, META, NVDA]
+    angles:
+      - "AI capex intensity vs. free-cash-flow and margin trajectory"
+      - "Monetisation of AI features; pricing power"
+    depth: standard
+    max_items: 6
+
+  - id: t.thematic
+    name: "Tom Becker"
+    email: "tom.becker@example.com"
+    role: thematic_strategist
+    coverage_sectors: [ai-infrastructure, energy, networking]
+    watchlist_tickers: [VRT, ANET, ETN, NBIS]
+    angles:
+      - "Data-centre power, cooling, grid constraints"
+      - "Inference cost curves and unit economics of AI"
+    cadence: weekly
+    depth: deep
+    max_items: 12
+
+# Angle taxonomy (controlled vocabulary the extractor tags claims against).
+# Keeps matching consistent across recipients and enables clean evals.
+angle_taxonomy:
+  - ai-capex
+  - inference-economics
+  - datacenter-power
+  - semis-supply-chain
+  - model-capability
+  - regulation-policy
+  - m&a
+  - competitive-share
+  - pricing-monetisation
+  - open-source-vs-closed
