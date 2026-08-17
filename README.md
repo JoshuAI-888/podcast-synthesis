@@ -11,6 +11,7 @@ transcribed first**.
 |---|---|
 | [`docs/product-specification.md`](docs/product-specification.md) | The full product specification — **start here** |
 | [`docs/architecture-and-build-options.md`](docs/architecture-and-build-options.md) | Design options evaluated (pros/cons) + recommended architecture & approach |
+| [`docs/off-the-shelf-solutions.md`](docs/off-the-shelf-solutions.md) | Build-vs-buy: off-the-shelf products surveyed, coverage matrix, hybrid recommendation |
 | [`config/podcasts.yaml`](config/podcasts.yaml) | Podcast source registry + declarative backfill jobs |
 | [`config/recipients.yaml`](config/recipients.yaml) | Recipient profiles (coverage, angles, preferences) + angle taxonomy |
 
