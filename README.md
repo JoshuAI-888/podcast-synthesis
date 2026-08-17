@@ -10,6 +10,7 @@ transcribed first**.
 | Path | Purpose |
 |---|---|
 | [`docs/product-specification.md`](docs/product-specification.md) | The full product specification — **start here** |
+| [`docs/architecture-and-build-options.md`](docs/architecture-and-build-options.md) | Design options evaluated (pros/cons) + recommended architecture & approach |
 | [`config/podcasts.yaml`](config/podcasts.yaml) | Podcast source registry + declarative backfill jobs |
 | [`config/recipients.yaml`](config/recipients.yaml) | Recipient profiles (coverage, angles, preferences) + angle taxonomy |
 
